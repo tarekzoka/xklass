@@ -1,27 +1,33 @@
 #!/bin/bash
 # coding BY: MOHAMED_OS
 
-Link='https://raw.githubusercontent.com/tarekzoka/xklass/main/'
-
-PkgName="enigma2-plugin-extensions-xklass_0.12.20240620"
+Link='https://gitlab.com/hanfy1971/ipaudiopro/-/raw/main/'
+pyv=$(python -c "import sys; print('.'.join(map(str, sys.version_info[:2])))")
+PkgName="enigma2-plugin-extensions-ipaudiopro"
 
 if [ -f /etc/opkg/opkg.conf ]; then
     status='/var/lib/opkg/status'
-    update='opkg update >/dev/null 2>&1'
+    update='opkg update'
     install='opkg install'
     remove='opkg remove --force-depends'
 elif [ -f /etc/apt/apt.conf ]; then
-    status='/var/lib/dpkg/status'
-    update='apt-get update >/dev/null 2>&1'
-    install='apt-get install --fix-broken --yes --assume-yes'
-    remove='apt-get purge --auto-remove'
+    printf '(!) sorry image not supported!'
+    sleep 2
+    exit 0
 fi
+
+case $(uname -m) in
+armv7l*) platform="cortexa15hf-neon-vfpv4" ;;
+mips*) platform="mips32el" ;;
+aarch64*) platform="aarch64" ;;
+esac
+
+${update} >/dev/null 2>&1
 
 e2_depndes() {
     if ! grep -qs "Package: $1" "${status}"; then
-        ${update}
         wait
-        printf "========| Need to install %s\n |========" "$1"
+        printf "========| Need to install %s |========" "$1"
         ${install} "$1"
         wait
         clear
@@ -34,10 +40,11 @@ cam_del_old_versions() {
     fi
 }
 
+arrVar=("alsa-conf" "alsa-plugins" "alsa-state" "enigma2" "libasound2" "libc6" "libgcc1" "libgcc1" "libstdc++6" "libpython${pyv}-1.0")
 if [ "$(python -c"from sys import version_info; print(version_info[0])")" = 3 ]; then
-    arrVar=("alsa-utils-aplay" "python3-six" "python3-sqlite3")
+    arrVar+=("python3-cryptography" "libavcodec60" "libavformat60")
 else
-    arrVar=("alsa-utils-aplay" "python-six" "python-sqlite3")
+    arrVar+=("python-cryptography" "libavcodec58" "libavformat58")
 fi
 
 for i in "${arrVar[@]}"; do
@@ -53,11 +60,11 @@ VER=$($DOWNLOADER - "${Link}version")
     exit 1
 }
 
-FNAME=${PkgName}_${VER}_all.$([ -d /etc/dpkg ] && echo -n 'deb' || echo -n 'ipk')
+FNAME=${PkgName}_${VER}_${platform}.ipk
 
 rm -f "/tmp/${FNAME}"
 
-$DOWNLOADER "/tmp/${FNAME}" "${Link}${FNAME}" || {
+$DOWNLOADER "/tmp/${FNAME}" "${Link}PY${pyv}/${FNAME}" || {
     printf "Error ! File download failed !\n"
     exit 1
 }
