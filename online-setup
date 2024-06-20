@@ -3,7 +3,7 @@
 
 Link='https://raw.githubusercontent.com/tarekzoka/xklass/main/'
 
-PkgName="enigma2-plugin-extensions-xklass_0.12.20240620"
+PkgName="enigma2-plugin-extensions-xklass"
 
 if [ -f /etc/opkg/opkg.conf ]; then
     status='/var/lib/opkg/status'
