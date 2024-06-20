@@ -1,5 +1,5 @@
 #!/bin/bash
-# coding BY: MOHAMED_OS
+# coding BY: TAREK_HANFY
 
 Link='https://gitlab.com/hanfy1971/ipaudiopro/-/raw/main/'
 pyv=$(python -c "import sys; print('.'.join(map(str, sys.version_info[:2])))")
