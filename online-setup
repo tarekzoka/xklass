@@ -1,9 +1,9 @@
 #!/bin/bash
 # coding BY: MOHAMED_OS
 
-Link='https://gitlab.com/hanfy1971/plugin/-/raw/main/FootOnsat/'
+Link='https://raw.githubusercontent.com/tarekzoka/xklass/main/'
 
-PkgName="enigma2-plugin-extensions-footonsat"
+PkgName="enigma2-plugin-extensions-xklass_0.12.20240620"
 
 if [ -f /etc/opkg/opkg.conf ]; then
     status='/var/lib/opkg/status'
